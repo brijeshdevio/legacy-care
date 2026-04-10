@@ -91,7 +91,6 @@ model FuneralPlan {
   status         PlanStatus @default(draft)
   location       String
   budgetEstimate Decimal?   @db.Decimal(10, 2)
-  nomineeToken   String     @unique @default(uuid()) // nominee access key
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 
@@ -130,13 +129,14 @@ model RitualPreference {
 // ─────────────────────────────────────────
 
 model Nominee {
-  id        String   @id @default(uuid())
-  planId    String
-  name      String
-  email     String
-  phone     String
-  relation  String // "son", "daughter", "spouse", "friend" etc.
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  planId       String
+  name         String
+  email        String
+  phone        String
+  relation     String // "son", "daughter", "spouse", "friend" etc.
+  createdAt    DateTime @default(now())
+  nomineeToken String   @unique @default(uuid()) // nominee access key
 
   // relation
   plan FuneralPlan @relation(fields: [planId], references: [id], onDelete: Cascade)

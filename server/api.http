@@ -36,33 +36,35 @@ Content-Type: application/json
 POST {{BASE_URL}}/api/auth/logout
 
 
-### Refresh access token
-POST {{BASE_URL}}/api/auth/refresh
-
-
-### Get current user profile
-GET {{BASE_URL}}/api/users/me
-
-
-### Change user password
-PATCH {{BASE_URL}}/api/users/change-password
+### Create funeral plan
+POST {{BASE_URL}}/api/plans
 Content-Type: application/json
 
 {
-  "oldPassword": "12345678",    
-  "newPassword": "newStrongPass1",
-  "confirmPassword": "newStrongPass1"
+  "location": "Lagos",
+  "budgetEstimate": 1000000,
+  "ritualPreference": {
+    "ceremonyType": "Muslim",
+    "durationDays": 3,
+    "preferredLocation": "Mosque",
+    "preferredTime": "Afternoon",
+    "musicPreference": "Islamic",
+    "foodPreference": "Halal",
+    "guestCount": 100,
+    "specialRequests": "None"
+  }
 }
 
 
-### Update current user profile
-PATCH {{BASE_URL}}/api/users/me
+### Get funeral plan
+GET {{BASE_URL}}/api/plans/me
+Content-Type: application/json
+
+
+### Update funeral plan
+PATCH {{BASE_URL}}/api/plans/e7834c55-9a47-425b-b00f-142fa66bc9fc
 Content-Type: application/json
 
 {
-  "name": "Jonson Carter"   
+  "status": "finalized"
 }
-
-
-### Get all user sessions
-GET {{BASE_URL}}/api/sessions
