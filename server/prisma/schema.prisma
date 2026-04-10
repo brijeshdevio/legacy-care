@@ -1,0 +1,229 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
+
+enum Role {
+  planner
+  provider
+  admin
+}
+
+enum PlanStatus {
+  draft
+  finalized
+}
+
+enum RitualType {
+  hindu
+  muslim
+  christian
+  sikh
+  non_religious
+  other
+}
+
+enum ProviderType {
+  funeral_agency
+  transport
+  flowers
+  clergy
+  catering
+  venue
+  other
+}
+
+enum ServiceCategory {
+  funeral
+  transport
+  flowers
+  clergy
+  catering
+  venue
+  other
+}
+
+enum DocumentType {
+  identity
+  will_note
+  photo
+  instruction
+  other
+}
+
+// ─────────────────────────────────────────
+// USER
+// ─────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String? // null agar Google OAuth se aaya
+  role         Role     @default(planner)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // relations
+  plan            FuneralPlan? // planner ka plan
+  providerProfile ServiceProvider? // provider ka profile
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// FUNERAL PLAN
+// ─────────────────────────────────────────
+
+model FuneralPlan {
+  id             String     @id @default(uuid())
+  userId         String     @unique // one-to-one with User
+  status         PlanStatus @default(draft)
+  location       String
+  budgetEstimate Decimal?   @db.Decimal(10, 2)
+  nomineeToken   String     @unique @default(uuid()) // nominee access key
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  // relations
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ritualPreference RitualPreference?
+  nominees         Nominee[]
+  documents        Document[]
+  planServices     PlanService[]
+
+  @@map("funeral_plans")
+}
+
+// ─────────────────────────────────────────
+// RITUAL PREFERENCE
+// ─────────────────────────────────────────
+
+model RitualPreference {
+  id               String     @id @default(uuid())
+  planId           String     @unique // one-to-one with FuneralPlan
+  ritualType       RitualType @default(other)
+  clergyPreference String? // e.g. "Pandit Sharma" ya "Any Catholic priest"
+  instructions     String?    @db.Text
+  musicPreference  String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  // relation
+  plan FuneralPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@map("ritual_preferences")
+}
+
+// ─────────────────────────────────────────
+// NOMINEE
+// ─────────────────────────────────────────
+
+model Nominee {
+  id        String   @id @default(uuid())
+  planId    String
+  name      String
+  email     String
+  phone     String
+  relation  String // "son", "daughter", "spouse", "friend" etc.
+  createdAt DateTime @default(now())
+
+  // relation
+  plan FuneralPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, email]) // same plan mein duplicate email nahi
+  @@map("nominees")
+}
+
+// ─────────────────────────────────────────
+// SERVICE PROVIDER
+// ─────────────────────────────────────────
+
+model ServiceProvider {
+  id           String       @id @default(uuid())
+  userId       String       @unique // one-to-one with User
+  businessName String
+  type         ProviderType
+  city         String
+  phone        String
+  description  String?      @db.Text
+  verified     Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // relations
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listings ServiceListing[]
+
+  @@map("service_providers")
+}
+
+// ─────────────────────────────────────────
+// SERVICE LISTING
+// ─────────────────────────────────────────
+
+model ServiceListing {
+  id          String          @id @default(uuid())
+  providerId  String
+  serviceName String
+  category    ServiceCategory
+  price       Decimal         @db.Decimal(10, 2)
+  description String?         @db.Text
+  available   Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  // relations
+  provider     ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  planServices PlanService[]
+
+  @@map("service_listings")
+}
+
+// ─────────────────────────────────────────
+// PLAN SERVICE  (junction: FuneralPlan ↔ ServiceListing)
+// ─────────────────────────────────────────
+
+model PlanService {
+  id        String   @id @default(uuid())
+  planId    String
+  listingId String
+  addedAt   DateTime @default(now())
+
+  // relations
+  plan    FuneralPlan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  listing ServiceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, listingId]) // same listing ek plan mein ek baar hi
+  @@map("plan_services")
+}
+
+// ─────────────────────────────────────────
+// DOCUMENT
+// ─────────────────────────────────────────
+
+model Document {
+  id         String       @id @default(uuid())
+  planId     String
+  s3Key      String       @unique // S3 object key — kabhi expose mat karo
+  fileName   String // original file name for display
+  fileType   DocumentType
+  mimeType   String // "application/pdf", "image/jpeg" etc.
+  sizeBytes  Int // file size for display
+  uploadedAt DateTime     @default(now())
+
+  // relation
+  plan FuneralPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+}
