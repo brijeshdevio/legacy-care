@@ -27,5 +27,17 @@ export const UpdatePlanSchema = z.object({
   ritualPreference: RitualPreferenceSchema.optional(),
 });
 
+export const NomineeSchema = z.object({
+  name: z.string().min(1, "Name is required").trim(),
+  email: z.string().email("Invalid email address"),
+  phone: z
+    .string()
+    .min(5, "Phone number is too short")
+    .max(20, "Phone number is too long")
+    .trim(),
+  relation: z.string().min(1, "Relation is required").trim(),
+});
+
 export type CreatePlanDto = z.infer<typeof CreatePlanSchema>;
 export type UpdatePlanDto = z.infer<typeof UpdatePlanSchema>;
+export type NomineeDto = z.infer<typeof NomineeSchema>;

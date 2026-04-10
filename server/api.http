@@ -68,3 +68,15 @@ Content-Type: application/json
 {
   "status": "finalized"
 }
+
+
+### Add nominee
+POST {{BASE_URL}}/api/plans/e7834c55-9a47-425b-b00f-142fa66bc9fb/nominees
+Content-Type: application/json
+
+{
+  "name": "Alex",       
+  "email": "alex@duck.com",    
+  "phone": "1234567808",
+  "relation": "Brother" 
+}

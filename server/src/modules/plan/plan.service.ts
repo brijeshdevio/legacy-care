@@ -1,6 +1,6 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { prisma } from "../../lib/prisma";
-import { CreatePlanDto, UpdatePlanDto } from "./plan.schema";
+import { CreatePlanDto, NomineeDto, UpdatePlanDto } from "./plan.schema";
 import { PRISMA_CODES } from "../../constants/error";
 import {
   ConflictException,
@@ -139,6 +139,39 @@ export class PlanService {
       ) {
         throw new ForbiddenException("Not your plan");
       }
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async addNominee(planId: string, data: NomineeDto) {
+    try {
+      return await this.prisma.nominee.create({
+        data: {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          relation: data.relation,
+          planId,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          relation: true,
+          planId: true,
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === PRISMA_CODES.FOREIGN_KEY_CONSTRAINT) {
+          throw new ForbiddenException("Plan not found");
+        }
+        if (error.code === PRISMA_CODES.CONFLICT) {
+          throw new ConflictException("Nominee with this email already added");
+        }
+      }
+      console.log(error);
       throw new InternalServerErrorException();
     }
   }

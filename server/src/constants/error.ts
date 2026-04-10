@@ -15,4 +15,5 @@ export const ERROR_CODES = {
 export const PRISMA_CODES = {
   CONFLICT: "P2002",
   NOT_FOUND: "P2025",
+  FOREIGN_KEY_CONSTRAINT: "P2003",
 };

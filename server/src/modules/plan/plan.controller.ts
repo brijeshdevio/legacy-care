@@ -40,4 +40,16 @@ export class PlanController {
       data: { plan },
     });
   };
+
+  addNominee = async (req: Request, res: Response) => {
+    if (!req.user?.id) throw new UnauthorizedException();
+    const planId = req.params?.id as string;
+
+    const nominee = await this.planService.addNominee(planId, req.body);
+    return sendSuccess(res, {
+      status: 201,
+      message: "Nominee added and notified via email",
+      data: { nominee },
+    });
+  };
 }
