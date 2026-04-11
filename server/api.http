@@ -84,3 +84,7 @@ Content-Type: application/json
 
 ### Delete nominee
 DELETE {{BASE_URL}}/api/plans/e7834c55-9a47-425b-b00f-142fa66bc9fc/nominees/37f4b82f-91fe-4a7e-8225-9ca6b4777db6
+
+
+### Get plan by nominee token
+GET {{BASE_URL}}/api/nominee/plan/050e87b8-0dd8-4f2a-87c9-10df39747987

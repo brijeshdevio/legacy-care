@@ -82,6 +82,7 @@ export class PlanService {
         },
         nominees: {
           select: {
+            nomineeToken: true,
             id: true,
             name: true,
             email: true,
