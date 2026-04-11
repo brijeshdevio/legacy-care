@@ -12,3 +12,4 @@ providerRouter.post(
   validate(CreateBusinessSchema),
   controller.createBusiness,
 );
+providerRouter.get("/profile", controller.getProfile);

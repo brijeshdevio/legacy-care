@@ -100,3 +100,7 @@ Content-Type: application/json
   "city": "New York",
   "phone": "123-456-7890"
 }
+
+
+### Get provider profile
+GET {{BASE_URL}}/api/providers/profile

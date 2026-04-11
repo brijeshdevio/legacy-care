@@ -19,4 +19,11 @@ export class ProviderController {
       data: { provider },
     });
   };
+
+  getProfile = async (req: Request, res: Response) => {
+    if (!req.user?.id) throw new UnauthorizedException();
+
+    const profile = await this.providerService.getProfile(req.user.id);
+    return sendSuccess(res, { data: { profile } });
+  };
 }

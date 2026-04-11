@@ -5,6 +5,7 @@ import { PRISMA_CODES } from "../../constants/error";
 import {
   ConflictException,
   InternalServerErrorException,
+  NotFoundException,
 } from "../../utils/exceptions";
 
 export class ProviderService {
@@ -38,5 +39,24 @@ export class ProviderService {
       }
       throw new InternalServerErrorException();
     }
+  }
+
+  async getProfile(userId: string) {
+    const profile = await this.prisma.serviceProvider.findUnique({
+      where: {
+        userId,
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!profile) throw new NotFoundException("Profile not found");
+    return profile;
   }
 }
