@@ -20,3 +20,4 @@ planRouter.post(
   validate(NomineeSchema),
   planController.addNominee,
 );
+planRouter.delete("/:id/nominees/:nomineeId", planController.deleteNominee);

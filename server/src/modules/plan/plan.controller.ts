@@ -52,4 +52,15 @@ export class PlanController {
       data: { nominee },
     });
   };
+
+  deleteNominee = async (req: Request, res: Response) => {
+    if (!req.user?.id) throw new UnauthorizedException();
+    const planId = req.params?.id as string;
+    const nomineeId = req.params?.nomineeId as string;
+
+    await this.planService.deleteNominee(req?.user?.id, planId, nomineeId);
+    return sendSuccess(res, {
+      message: "Nominee deleted successfully",
+    });
+  };
 }

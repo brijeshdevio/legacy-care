@@ -175,4 +175,26 @@ export class PlanService {
       throw new InternalServerErrorException();
     }
   }
+
+  async deleteNominee(userId: string, planId: string, nomineeId: string) {
+    try {
+      await this.prisma.nominee.delete({
+        where: {
+          id: nomineeId,
+          planId,
+          plan: {
+            userId,
+          },
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === PRISMA_CODES.NOT_FOUND
+      ) {
+        throw new ForbiddenException("Not your plan");
+      }
+      throw new InternalServerErrorException();
+    }
+  }
 }
