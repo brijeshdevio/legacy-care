@@ -63,4 +63,27 @@ export class PlanController {
       message: "Nominee deleted successfully",
     });
   };
+
+  addService = async (req: Request, res: Response) => {
+    if (!req.user?.id) throw new UnauthorizedException();
+    const planId = req.params?.planId as string;
+    const listingId = req.body?.listingId as string;
+
+    const service = await this.planService.addService(planId, listingId);
+    return sendSuccess(res, {
+      message: "Service added successfully",
+      data: { service },
+    });
+  };
+
+  deleteService = async (req: Request, res: Response) => {
+    if (!req.user?.id) throw new UnauthorizedException();
+    const planId = req.params?.planId as string;
+    const listingId = req.params?.listingId as string;
+
+    await this.planService.deleteService(req?.user?.id, planId, listingId);
+    return sendSuccess(res, {
+      message: "Service removed successfully",
+    });
+  };
 }

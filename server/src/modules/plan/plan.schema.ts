@@ -38,6 +38,12 @@ export const NomineeSchema = z.object({
   relation: z.string().min(1, "Relation is required").trim(),
 });
 
+export const AddServiceSchema = z
+  .object({
+    listingId: z.string().uuid(),
+  })
+  .strict();
+
 export type CreatePlanDto = z.infer<typeof CreatePlanSchema>;
 export type UpdatePlanDto = z.infer<typeof UpdatePlanSchema>;
 export type NomineeDto = z.infer<typeof NomineeSchema>;

@@ -198,4 +198,52 @@ export class PlanService {
       throw new InternalServerErrorException();
     }
   }
+
+  async addService(planId: string, listingId: string) {
+    try {
+      return await this.prisma.planService.create({
+        data: {
+          planId,
+          listingId,
+        },
+        select: {
+          id: true,
+          listing: true,
+          addedAt: true,
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === PRISMA_CODES.FOREIGN_KEY_CONSTRAINT) {
+          throw new ForbiddenException("Plan not found");
+        }
+        if (error.code === PRISMA_CODES.CONFLICT) {
+          throw new ConflictException("Service already in plan");
+        }
+      }
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async deleteService(userId: string, planId: string, listingId: string) {
+    try {
+      await this.prisma.planService.delete({
+        where: {
+          planId,
+          id: listingId,
+          plan: {
+            userId,
+          },
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === PRISMA_CODES.NOT_FOUND
+      ) {
+        throw new ForbiddenException("Not your plan");
+      }
+      throw new InternalServerErrorException();
+    }
+  }
 }

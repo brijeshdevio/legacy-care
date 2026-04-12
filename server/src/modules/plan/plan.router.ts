@@ -3,6 +3,7 @@ import { validate } from "../../middleware/validate";
 import { PlanController } from "./plan.controller";
 import { PlanService } from "./plan.service";
 import {
+  AddServiceSchema,
   CreatePlanSchema,
   NomineeSchema,
   UpdatePlanSchema,
@@ -21,3 +22,9 @@ planRouter.post(
   planController.addNominee,
 );
 planRouter.delete("/:id/nominees/:nomineeId", planController.deleteNominee);
+planRouter.post(
+  "/:planId/services",
+  validate(AddServiceSchema),
+  planController.addService,
+);
+planRouter.delete("/:planId/services/:listingId", planController.deleteService);

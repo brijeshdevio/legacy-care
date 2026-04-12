@@ -133,3 +133,16 @@ Content-Type: application/json
 
 ### Delete Listing
 DELETE {{BASE_URL}}/api/listings/050e87b8-0dd8-4f2a-87c9-10df39747987
+
+
+### Add Service
+POST {{BASE_URL}}/api/plans/e7834c55-9a47-425b-b00f-142fa66bc9fc/services
+Content-Type: application/json
+
+{
+  "listingId": "050e87b8-0dd8-4f2a-87c9-10df39747987"
+}
+
+
+### Delete Service
+DELETE  {{BASE_URL}}/api/plans/e7834c55-9a47-425b-b00f-142fa66bc9fc/services/050e87b8-0dd8-4f2a-87c9-10df39747987
