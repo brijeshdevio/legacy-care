@@ -108,3 +108,28 @@ GET {{BASE_URL}}/api/providers/profile
 
 ### Get providers
 GET {{BASE_URL}}/api/providers
+
+
+### Create Listing
+POST {{BASE_URL}}/api/listings
+Content-Type: application/json
+
+{
+  "serviceName": "Peaceful Funeral Services",
+  "category": "funeral",
+  "price": 2500,
+  "available": true
+}
+
+
+### Update Listing
+PATCH {{BASE_URL}}/api/listings/050e87b8-0dd8-4f2a-87c9-10df39747987
+Content-Type: application/json
+
+{
+  "available": false
+}
+
+
+### Delete Listing
+DELETE {{BASE_URL}}/api/listings/050e87b8-0dd8-4f2a-87c9-10df39747987
