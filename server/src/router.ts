@@ -6,6 +6,7 @@ import { planRouter } from "./modules/plan/plan.router";
 import { nomineeRouter } from "./modules/nominee/nominee.router";
 import { providerRouter } from "./modules/provider/provider.router";
 import { listingRouter } from "./modules/listing/listing.router";
+import { adminRouter } from "./modules/admin/admin.router";
 
 export const router = Router();
 router.use("/auth", authRouter);
@@ -13,3 +14,4 @@ router.use("/plans", authenticate, roleGuard(["planner"]), planRouter);
 router.use("/providers", providerRouter);
 router.use("/nominee", nomineeRouter);
 router.use("/listings", authenticate, roleGuard(["provider"]), listingRouter);
+router.use("/admin", authenticate, roleGuard(["admin"]), adminRouter);

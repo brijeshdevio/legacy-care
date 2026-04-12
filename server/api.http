@@ -146,3 +146,7 @@ Content-Type: application/json
 
 ### Delete Service
 DELETE  {{BASE_URL}}/api/plans/e7834c55-9a47-425b-b00f-142fa66bc9fc/services/050e87b8-0dd8-4f2a-87c9-10df39747987
+
+
+### Get Users
+GET {{BASE_URL}}/api/admin/users
