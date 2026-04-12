@@ -104,3 +104,7 @@ Content-Type: application/json
 
 ### Get provider profile
 GET {{BASE_URL}}/api/providers/profile
+
+
+### Get providers
+GET {{BASE_URL}}/api/providers

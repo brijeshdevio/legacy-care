@@ -1,6 +1,6 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { prisma } from "../../lib/prisma";
-import { CreateBusinessDto } from "./provider.schema";
+import { CreateBusinessDto, GetProvidersQueryDto } from "./provider.schema";
 import { PRISMA_CODES } from "../../constants/error";
 import {
   ConflictException,
@@ -58,5 +58,43 @@ export class ProviderService {
 
     if (!profile) throw new NotFoundException("Profile not found");
     return profile;
+  }
+
+  async getProviders(query: GetProvidersQueryDto) {
+    const where: any = {};
+    if (query.type) where.type = query.type;
+    if (query.city) where.city = { contains: query.city, mode: "insensitive" };
+    if (query.minPrice || query.maxPrice) {
+      where.price = {};
+      if (query.minPrice !== undefined) where.price.gte = query.minPrice;
+      if (query.maxPrice !== undefined) where.price.lte = query.maxPrice;
+    }
+
+    const total = await prisma.serviceProvider.count({ where });
+    const take = query.limit ?? 10;
+    const skip = ((query.page ?? 1) - 1) * take;
+
+    const providers = await prisma.serviceProvider.findMany({
+      where,
+      include: {
+        user: {
+          select: { name: true, email: true },
+        },
+      },
+      omit: {
+        userId: true,
+      },
+      skip,
+      take,
+    });
+
+    const pagination = {
+      total,
+      page: query.page,
+      limit: query.limit,
+      totalPages: Math.ceil(total / query.limit),
+    };
+
+    return { providers, pagination };
   }
 }

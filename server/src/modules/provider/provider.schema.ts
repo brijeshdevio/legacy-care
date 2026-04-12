@@ -15,4 +15,35 @@ export const CreateBusinessSchema = z.object({
   description: z.string().optional(),
 });
 
+export const GetProvidersQuerySchema = z.object({
+  type: z
+    .enum([
+      "funeral_agency",
+      "transport",
+      "flowers",
+      "clergy",
+      "catering",
+      "other",
+    ])
+    .optional(),
+  city: z.string().optional(),
+  minPrice: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined)),
+  maxPrice: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined)),
+  page: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : 1)), // default page 1
+  limit: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : 10)), // default limit 10
+});
+
 export type CreateBusinessDto = z.infer<typeof CreateBusinessSchema>;
+export type GetProvidersQueryDto = z.infer<typeof GetProvidersQuerySchema>;
