@@ -10,7 +10,7 @@ export class PlanController {
     if (!req.user?.id) throw new UnauthorizedException();
 
     const plan = await this.planService.createPlan(req?.user?.id, req.body);
-    console.log(plan);
+
     return sendSuccess(res, {
       message: "Funeral plan created",
       data: { plan },

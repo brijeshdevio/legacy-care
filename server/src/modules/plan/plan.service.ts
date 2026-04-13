@@ -172,7 +172,7 @@ export class PlanService {
           throw new ConflictException("Nominee with this email already added");
         }
       }
-      console.log(error);
+
       throw new InternalServerErrorException();
     }
   }
