@@ -150,3 +150,16 @@ DELETE  {{BASE_URL}}/api/plans/e7834c55-9a47-425b-b00f-142fa66bc9fc/services/050
 
 ### Get Users
 GET {{BASE_URL}}/api/admin/users
+
+
+### Verify Provider
+PUT {{BASE_URL}}/api/admin/providers/e7834c55-9a47-425b-b00f-142fa66bc9fc/verify
+Content-Type: application/json
+
+{
+  "verified": true
+}
+
+
+### Verify Provider
+PUT {{BASE_URL}}/api/admin/users/e7834c55-9a47-425b-b00f-142fa66bc9fc/toggle
