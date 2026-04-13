@@ -1,11 +1,15 @@
-import { AppRouter } from "./AppRouter";
-import "@/App.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
+import { Router } from "./Router";
 
 export function App() {
+  const queryClient = new QueryClient();
+
   return (
-    <>
-      <AppRouter />
-    </>
+    <QueryClientProvider client={queryClient}>
+      <Router />
+      <Toaster />
+    </QueryClientProvider>
   );
 }
 

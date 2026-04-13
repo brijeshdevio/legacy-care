@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-import { Spinner } from "@/components/ui/spinner";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { Spinner } from "@/components/ui/spinner";
 
 export function PublicLayout() {
   return (
@@ -10,6 +11,7 @@ export function PublicLayout() {
       <Suspense fallback={<Spinner className="h-screen" />}>
         <Outlet />
       </Suspense>
+      <Footer />
     </>
   );
 }
